@@ -11,13 +11,12 @@ class Talk
 module.exports = (reylero)->
 
   reylero.brain.on "loaded", =>
-    console.log "Waking up"
     reylero.brain.data.sdt ||= {
       talks: []
     }
 
-  reylero.respond /sdt schedule/i, (res)->
-    console.log "Listing SDT schedule for #{res.message.user.name}"
+  reylero.respond /sdt schedule$/i, (res)->
+    console.log "[sdt] Listing schedule for #{res.message.user.name}"
 
     schedule = new Schedule reylero.brain.data.sdt.talks
 
@@ -26,8 +25,15 @@ module.exports = (reylero)->
              else
                "There are no talks scheduled for the next show don't tell session :("
 
-  reylero.respond /sdt submit (.+)/i, (res) ->
-    console.log "Scheduling #{res.match[1]} as SDT talk for #{res.message.user.name}"
+  reylero.respond /sdt schedule clear$/i, (res)->
+    console.log "[sdt] Clearing schedule for #{res.message.user.name}"
+    reylero.brain.data.sdt = {
+      talks: []
+    }
+    res.reply "Schedule has been cleared"
+
+  reylero.respond /sdt submit (.+)/i, (res)->
+    console.log "[sdt] Scheduling talk '#{res.match[1]}' by  #{res.message.user.name}"
 
     talk = new Talk(res.match[1], res.message.user)
 
