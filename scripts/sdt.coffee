@@ -1,4 +1,10 @@
-# Show dont tell
+class Schedule
+  constructor: (@talks)->
+  toString: ->
+    @talks.map((talk)->
+      "- *#{talk.title}* _by #{talk.speaker.name} (a.k.a. #{talk.speaker.alias})_"
+    ).join("\n")
+
 module.exports = (reylero)->
 
   reylero.brain.on "loaded", =>
@@ -10,16 +16,12 @@ module.exports = (reylero)->
   reylero.respond /sdt schedule/i, (res)->
     console.log "Listing SDT schedule for #{res.message.user.name}"
 
-    talks = reylero.brain.data.sdt.talks
+    schedule = new Schedule reylero.brain.data.sdt.talks
 
-    message = if talks.length > 0
-      "These are the talks scheduled for the next show don't tell session: \n" + talks.map((talk)->
-        "#{talk.title} by #{talk.speaker.name} (a.k.a. #{talk.speaker.alias})"
-      ).join("\n")
-    else
-      "There are no talks scheduled for the next show don't tell session :("
-
-    res.send message
+    res.send if schedule.talks.length > 0
+               "These are the talks scheduled for the next show don't tell session: \n#{schedule}"
+             else
+               "There are no talks scheduled for the next show don't tell session :("
 
   reylero.respond /sdt submit (.+)/i, (res) ->
     console.log "Scheduling #{res.match[1]} as SDT talk for #{res.message.user.name}"
