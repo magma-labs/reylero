@@ -15,7 +15,7 @@ module.exports = (reylero)->
       talks: []
     }
 
-  reylero.respond /sdt schedule$/i, (res)->
+  reylero.respond /(.)+sdt schedule$/i, (res)->
     console.log "[sdt] Listing schedule for #{res.message.user.name}"
 
     schedule = new Schedule reylero.brain.data.sdt.talks
