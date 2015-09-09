@@ -2,7 +2,7 @@ class Schedule
   constructor: (@talks)->
   toString: ->
     @talks.map((talk)->
-      "- *#{talk.title}* _by #{talk.speaker.name} (a.k.a. #{talk.speaker.alias})_"
+      "- *#{talk.title}* _by #{talk.speaker.name}_"
     ).join("\n")
 
 class Talk
