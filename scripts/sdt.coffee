@@ -2,11 +2,11 @@
 #   SDT manages show don't tell sessions at MagmaLabs
 #
 # Commands:
-#   reylero sdt schedule                      - Shows current session schedule
-#   reylero sdt schedule clear                - Clears current session schedule
-#   reylero sdt sessions create <Sep 15 2015> - Create session for a specific date
-#   reylero sdt sessions list   [5]           - List sessions with optional limit
-#   reylero sdt submit <topic>                - Submit a proposal to the current session
+#   hubot sdt schedule - Shows current session schedule
+#   hubot sdt schedule clear - (admin) Clears current session schedule
+#   hubot sdt sessions create <Sep 15 2015> - (admin) Create session for a specific date
+#   hubot sdt sessions list [5] - List sessions with optional limit
+#   hubot sdt submit <topic> - Submit a proposal to the current session
 #
 # Dependencies:
 #   moment
@@ -33,10 +33,10 @@ class Talk
 
 formatTalksList = (talks)->
   if talks.length == 0
-    "- No talks\n"
+    "- No talks"
   else
     talks.map (talk)->
-      "- *#{talk.title}* _by #{talk.speaker}_\n"
+      "- *#{talk.title}* _by #{talk.speaker.name} (#{talk.speaker.nick})_"
 
 getCurrentSession = (reylero)->
   _.find getSortedSessions(reylero), (s)->
@@ -91,7 +91,7 @@ module.exports = (reylero)->
 
     res.send if session.talks.length > 0
                "These are the talks scheduled for the next session on #{session.date}:\n" +
-               formatTalksList(session)
+               formatTalksList(session.talks).join "\n"
              else
                "There aren't talks scheduled for the next session on #{session.date} :("
 
@@ -123,12 +123,11 @@ module.exports = (reylero)->
        res.send "Sorry, there aren't sessions scheduled yet."
        return
 
-     list = ""
 
-     for session in sessions
-       list += "#{session.date}:\n" + formatTalksList(session.talks)
+     list = sessions.map (session)->
+       "#{session.date}:\n" + formatTalksList(session.talks).join "\n"
 
-     res.send list
+     res.send "These are the last #{sessions.length} sessions details:\n" + list.join("\n")
 
   reylero.respond /sdt submit (.+)/i, (res)->
     session = getCurrentSession(reylero)
