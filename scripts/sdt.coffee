@@ -129,13 +129,13 @@ module.exports = (reylero)->
 
      res.send "These are the last #{sessions.length} sessions details:\n" + list.join("\n")
 
-  reylero.respond /sdt submit (.+)/i, (res)->
+  reylero.respond /sdt submit ("|')?(.+)\1$/i, (res)->
     session = getCurrentSession(reylero)
     unless session
       res.send "Sorry, there aren't sessions scheduled yet."
       return
 
-    talk = new Talk(res.match[1], res.message.user)
+    talk = new Talk(res.match[2], res.message.user.name)
 
     res.reply if session.talks.length < 2
                 session.talks.push talk
