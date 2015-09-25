@@ -33,7 +33,7 @@ class Talk
 
 formatTalksList = (talks)->
   if talks.length == 0
-    "- No talks"
+    ["- No talks"]
   else
     talks.map (talk)->
       "- *#{talk.title}* _by #{talk.speaker.name} (#{talk.speaker.nick})_"
