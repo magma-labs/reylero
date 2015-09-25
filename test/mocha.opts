@@ -1,2 +1,3 @@
 --compilers coffee:coffee-script/register
---reporter nyan
+--reporter  nyan
+--require   coffee-coverage/register-istanbul
