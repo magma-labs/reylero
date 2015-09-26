@@ -135,7 +135,7 @@ module.exports = (reylero)->
       res.send "Sorry, there aren't sessions scheduled yet."
       return
 
-    talk = new Talk(res.match[2], res.message.user.name)
+    talk = new Talk(res.match[2], res.message.user)
 
     res.reply if session.talks.length < 2
                 session.talks.push talk
