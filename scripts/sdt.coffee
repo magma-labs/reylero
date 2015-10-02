@@ -7,6 +7,7 @@
 #   hubot sdt sessions create <Sep 15 2015> - (admin) Create session for a specific date
 #   hubot sdt sessions list [5] - List sessions with optional limit
 #   hubot sdt submit <topic> - Submit a proposal to the current session
+#   hubot sdt group submit with <username> <topic>- Submit a group proposal to the current session
 #
 # Dependencies:
 #   moment
@@ -22,7 +23,8 @@ repository = null
 
 class ListDecorator
   @speakers: (speakers)->
-    names = speakers.map (s)-> "#{s.real_name} (#{s.name})"
+    sortedSpeakers = _.sortBy speakers, (s)-> s.real_name
+    names = sortedSpeakers.map (s)-> "#{s.real_name} (#{s.name})"
     "_by #{names.join(' & ')}_"
   @talks: (talks)->
     details = talks.map (t)=> "- *#{t.title}* #{@speakers(t.speakers)}"
@@ -141,3 +143,26 @@ module.exports = (reylero)->
                  "Sure, your talk _#{talk.title}_ has been scheduled for session on #{session.date}."
                else
                  "Sorry, we reached the limit of talks for session on #{session.date}."
+
+   reylero.respond /sdt group submit with (\w+) ("|')?(.+)\2$/i, (res)->
+     session = repository.currentSession(reylero)
+
+     unless session
+       res.reply "Sorry, there aren't sessions scheduled yet."
+       return
+
+     unless session.talks.length < 2
+       res.reply "Sorry, we reached the limit of talks for session on #{session.date}."
+       return
+
+     users = repository.findUser(res.match[1])
+
+     switch users.length
+       when 0
+         res.reply "Sorry, I don't know who #{res.match[1]} is."
+       when 1
+         talk = new Talk(res.match[3], res.message.user, users[0])
+         session.talks.push talk
+         res.reply "Sure, your talk _#{talk.title}_ with #{users[0].name} has been scheduled for session on #{session.date}."
+       else
+         res.reply "Sorry there are many users that match that name:\n" + users.map((u)-> u.name ).join(", ")
