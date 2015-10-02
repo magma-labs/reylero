@@ -1,5 +1,5 @@
 # Description:
-#   SDT manages show don't tell sessions at MagmaLabs
+#   SDT manages show don't tell sessions held at MagmaLabs
 #
 # Commands:
 #   hubot sdt schedule - Shows current session schedule
@@ -18,44 +18,47 @@
 
 moment     = require "moment"
 _          = require "underscore"
+repository = null
 
-class Database
-  constructor: ->
-    @sessions = []
+class ListDecorator
+  @speakers: (speakers)->
+    names = speakers.map (s)-> "#{s.real_name} (#{s.name})"
+    "_by #{names.join(' & ')}_"
+  @talks: (talks)->
+    details = talks.map (t)=> "- *#{t.title}* #{@speakers(t.speakers)}"
+    if talks.length > 0 then details.join("\n") else "- No talks"
+
+class Repository
+  constructor: (@db)->
+    @db.data.sdt ||= { sessions: [] }
+
+  addSession: (session)->
+    @db.data.sdt.sessions.push session
+
+  currentSession: ->
+    _.find @db.data.sdt.sessions, (s)->
+      moment(new Date(s.date)).isBetween(moment().startOf("week"), moment().add(1, "week"))
+
+  findUser: (username)->
+    @db.usersForFuzzyName(username)
+
+  sessions: ->
+    _.sortBy @db.data.sdt.sessions, (s)->
+      - new Date(s.date)
 
 class Session
-  constructor:(date)->
-    @date = moment(date).format('L')
-    @talks = []
+  constructor: (date, @talks = [])->
+    @date = moment(date).format("L")
 
 class Talk
-  constructor: (@title, @speaker)->
-
-formatTalksList = (talks)->
-  if talks.length == 0
-    ["- No talks"]
-  else
-    talks.map (talk)->
-      "- *#{talk.title}* _by #{talk.speaker.name} (#{talk.speaker.nick})_"
-
-getCurrentSession = (reylero)->
-  _.find getSortedSessions(reylero), (s)->
-    moment(new Date(s.date)).isBetween(moment().startOf('week'), moment().add(1, 'week'))
-
-getSessions = (reylero)->
-  reylero.brain.data.sdt.sessions
-
-getSortedSessions = (reylero)->
-  _.sortBy getSessions(reylero), (s)->
-    - new Date(s.date)
-
+  constructor: (@title, @speakers...)->
 
 module.exports = (reylero)->
 
   # Brain load
   reylero.brain.on "loaded", =>
-
-    reylero.brain.data.sdt ||= new Database
+    repository = new Repository(reylero.brain)
+    reylero.brain.data.sdt ||= repository.db.data.sdt
 
   # Sessions create
   reylero.respond /sdt sessions create (\w{3} \d{1,2} \d{4})$/, (res)->
@@ -72,18 +75,16 @@ module.exports = (reylero)->
 
     session = new Session(date)
 
-    if _.findWhere getSessions(reylero), { date: session.date }
+    if _.findWhere repository.sessions(), { date: session.date }
       res.reply "Excuse me master, that session already exists."
       return
 
-    reylero.brain.data.sdt.sessions.push session
-    reylero.brain.save()
+    repository.addSession(session)
     res.reply "Sure master, consider it done."
 
   # Show current session's schedule
   reylero.respond /sdt schedule$/i, (res)->
-
-    session = getCurrentSession(reylero)
+    session = repository.currentSession()
 
     unless session
       res.send "Sorry, there aren't sessions scheduled yet."
@@ -91,7 +92,7 @@ module.exports = (reylero)->
 
     res.send if session.talks.length > 0
                "These are the talks scheduled for the next session on #{session.date}:\n" +
-               formatTalksList(session.talks).join "\n"
+               ListDecorator.talks(session.talks)
              else
                "There aren't talks scheduled for the next session on #{session.date} :("
 
@@ -102,14 +103,13 @@ module.exports = (reylero)->
        res.reply "Sorry, I'm afraid only admins are allowed to create sessions."
        return
 
-     session = getCurrentSession(reylero)
+     session = repository.currentSession()
 
      unless session
        res.send "Sorry, there aren't sessions scheduled yet."
        return
 
      session.talks = []
-     reylero.brain.save()
 
      res.reply "Sure master, consider it done."
 
@@ -117,28 +117,27 @@ module.exports = (reylero)->
    reylero.respond /sdt sessions(?: list|)\s?(\d+)?$/i, (res)->
 
      limit    = res.match[1] || 5
-     sessions = getSortedSessions(reylero)[0...limit]
+     sessions = repository.sessions()[0...limit]
 
      if sessions.length == 0
        res.send "Sorry, there aren't sessions scheduled yet."
        return
 
-
-     list = sessions.map (session)->
-       "#{session.date}:\n" + formatTalksList(session.talks).join "\n"
+     list = sessions.map (s)-> "#{s.date}:\n" + ListDecorator.talks(s.talks)
 
      res.send "These are the last #{sessions.length} sessions details:\n" + list.join("\n")
 
-  reylero.respond /sdt submit ("|')?(.+)\1$/i, (res)->
-    session = getCurrentSession(reylero)
-    unless session
-      res.send "Sorry, there aren't sessions scheduled yet."
-      return
+   reylero.respond /sdt submit ("|')?(.+)\1$/i, (res)->
+     session = repository.currentSession()
 
-    talk = new Talk(res.match[2], res.message.user)
+     unless session
+       res.send "Sorry, there aren't sessions scheduled yet."
+       return
 
-    res.reply if session.talks.length < 2
-                session.talks.push talk
-                "Sure, your talk _#{talk.title}_ has been scheduled for session on #{session.date}."
-              else
-                "Sorry, we reached the limit of talks for session on #{session.date}."
+     talk = new Talk(res.match[2], { name: res.message.user.name, real_name: res.message.user.real_name || '' })
+
+     res.reply if session.talks.length < 2
+                 session.talks.push talk
+                 "Sure, your talk _#{talk.title}_ has been scheduled for session on #{session.date}."
+               else
+                 "Sorry, we reached the limit of talks for session on #{session.date}."
