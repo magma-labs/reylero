@@ -38,8 +38,8 @@ class Repository
     @db.data.sdt.sessions.push session
 
   currentSession: ->
-    _.find @db.data.sdt.sessions, (s)->
-      moment(new Date(s.date)).isBetween(moment().startOf("week"), moment().add(1, "week"))
+    _.find @sessions(), (s)->
+      moment().startOf("day").isBefore(moment(new Date(s.date)).endOf("day"))
 
   findUser: (username)->
     @db.usersForFuzzyName(username)
