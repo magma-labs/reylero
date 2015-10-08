@@ -1,17 +1,23 @@
 # Description:
 #   SDT manages show don't tell sessions held at MagmaLabs
 #
-# Commands:
-#   hubot sdt schedule - Shows current session schedule
-#   hubot sdt schedule clear - (admin) Clears current session schedule
-#   hubot sdt sessions create <Sep 15 2015> - (admin) Create session for a specific date
-#   hubot sdt sessions list [5] - List sessions with optional limit
-#   hubot sdt submit <topic> - Submit a proposal to the current session
-#   hubot sdt group submit with <username> <topic>- Submit a group proposal to the current session
-#
 # Dependencies:
-#   moment
-#   underscore
+#   "moment":"^2.10.6"
+#   "underscore":"^1.8.3"
+#
+# Configuration:
+#   None
+#
+# Commands:
+#   hubot sdt group submit with <username> <topic>- Submit a group talk proposal
+#   hubot sdt schedule - Show current session schedule
+#   hubot sdt schedule clear - (admin) Clear current session schedule
+#   hubot sdt sessions create <Sep 15 2015> - (admin) Create a session
+#   hubot sdt sessions [list] [n] - List last n sessions with schedules
+#   hubot sdt submit <topic> - Submit a talk proposal
+#
+# Notes:
+#   None
 #
 # Authors:
 #   Ignacio Galindo <ignacio.galindo@magmalabs.io>
