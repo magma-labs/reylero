@@ -27,14 +27,7 @@ moment     = require "moment"
 _          = require "underscore"
 repository = null
 
-class ListDecorator
-  @speakers: (speakers)->
-    sortedSpeakers = _.sortBy speakers, (s)-> s.real_name
-    names = sortedSpeakers.map (s)-> "#{s.real_name} (#{s.name})"
-    "_by #{names.join(' & ')}_"
-  @talks: (talks)->
-    details = talks.map (t)=> "- *#{t.title}* #{@speakers(t.speakers)}"
-    if talks.length > 0 then details.join("\n") else "- No talks"
+ListDecorator = require "./sdt/list_decorator"
 
 class Repository
   constructor: (@db) ->
