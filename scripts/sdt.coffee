@@ -23,36 +23,14 @@
 #   Ignacio Galindo <ignacio.galindo@magmalabs.io>
 #
 
-moment     = require "moment"
-_          = require "underscore"
-repository = null
+moment        = require "moment"
+_             = require "underscore"
+repository    = null
 
-ListDecorator = require "./sdt/list_decorator"
-
-class Repository
-  constructor: (@db) ->
-    @db.data.sdt ||= { sessions: [] }
-
-  addSession: (session) ->
-    @db.data.sdt.sessions.push session
-
-  currentSession: ->
-    _.find @sessions(), (s) ->
-      moment().startOf("day").isBefore(moment(new Date(s.date)).endOf("day"))
-
-  findUser: (username) ->
-    @db.usersForFuzzyName(username)
-
-  sessions: ->
-    _.sortBy @db.data.sdt.sessions, (s) ->
-      - new Date(s.date)
-
-class Session
-  constructor: (date, @talks = []) ->
-    @date = moment(date).format("L")
-
-class Talk
-  constructor: (@title, @speakers...) ->
+ListPresenter = require "./sdt/list_presenter"
+Repository    = require "./sdt/repository"
+Session       = require "./sdt/session"
+Talk          = require "./sdt/talk"
 
 module.exports = (reylero) ->
 
@@ -93,7 +71,7 @@ module.exports = (reylero) ->
 
     res.send if session.talks.length > 0
       "These are the talks scheduled for the next session on " +
-      "#{session.date}:\n #{ListDecorator.talks(session.talks)}"
+      "#{session.date}:\n #{ListPresenter.talks(session.talks)}"
     else
       "There aren't talks scheduled for the next session on #{session.date} :("
 
@@ -124,7 +102,7 @@ module.exports = (reylero) ->
        res.send "Sorry, there aren't sessions scheduled yet."
        return
 
-     list = sessions.map (s)-> "#{s.date}:\n" + ListDecorator.talks(s.talks)
+     list = sessions.map (s)-> "#{s.date}:\n" + ListPresenter.talks(s.talks)
 
      res.send "These are the last #{sessions.length} sessions details:\n" +
        list.join("\n")
@@ -168,7 +146,7 @@ module.exports = (reylero) ->
        when 1
          talk = new Talk(res.match[3], res.message.user, users[0])
          session.talks.push talk
-         res.reply "Sure, your talk _#{talk.title}_ with #{users[0].name}" +
+         res.reply "Sure, your talk _#{talk.title}_ with #{users[0].name} " +
            "has been scheduled for session on #{session.date}."
        else
          res.reply "Sorry there are many users that match that name:\n" +

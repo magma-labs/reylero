@@ -30,7 +30,8 @@
     "istanbul": "^0.3.21",
     "mocha": "^2.3.3",
     "mocha-lcov-reporter": "^1.0.0",
-    "sinon": "^1.17.0"
+    "sinon": "^1.17.0",
+    "sinon-chai": "^2.8.0"
   },
   "scripts": {
     "test": "istanbul cover _mocha --report lcovonly -- --reporter dot"

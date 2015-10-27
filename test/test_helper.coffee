@@ -1,8 +1,12 @@
 chai   = require "chai"
 hubot  = require "hubot"
+moment = require "moment"
 sinon  = require "sinon"
 
-global.expect = chai.expect
+chai.use require "sinon-chai"
 
-global.robot = ->
-  hubot.loadBot "./adapters", "shell", false
+global.expect = chai.expect
+global.moment = moment
+global.sinon  = sinon
+
+global.newTestRobot = -> hubot.loadBot "./adapters", "shell", false

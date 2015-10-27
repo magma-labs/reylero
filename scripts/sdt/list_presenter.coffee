@@ -1,6 +1,6 @@
 _ = require "underscore"
 
-class ListDecorator
+class ListPresenter
   @speakers: (speakers) ->
     _.sortBy speakers, (s) -> s.real_name
       .map (s) -> "#{s.real_name} (#{s.name})"
@@ -14,4 +14,4 @@ class ListDecorator
     else
       "- No talks"
 
-module.exports = ListDecorator
+module.exports = ListPresenter
