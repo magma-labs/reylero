@@ -34,6 +34,6 @@
     "sinon-chai": "^2.8.0"
   },
   "scripts": {
-    "test": "istanbul cover _mocha --report lcovonly -- --reporter dot"
+    "test": "istanbul cover _mocha -- --reporter dot"
   }
 }
