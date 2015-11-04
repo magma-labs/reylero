@@ -32,17 +32,17 @@ Repository    = require "./sdt/repository"
 Session       = require "./sdt/session"
 Talk          = require "./sdt/talk"
 
-module.exports = (reylero) ->
+module.exports = (robot) ->
 
   # Brain load
-  reylero.brain.on "loaded", ->
-    repository = new Repository(reylero.brain)
-    reylero.brain.data.sdt ||= repository.db.data.sdt
+  robot.brain.on "loaded", ->
+    repository = new Repository(robot.brain)
+    robot.brain.data.sdt ||= repository.db.data.sdt
 
   # Sessions create
-  reylero.respond /sdt sessions create (\w{3} \d{1,2} \d{4})$/, (res) ->
+  robot.respond /sdt sessions create (\w{3} \d{1,2} \d{4})$/, (res) ->
 
-    unless reylero.auth.isAdmin(res.message.user)
+    unless robot.auth.isAdmin(res.message.user)
       res.reply "Sorry, I'm afraid only admins are allowed to create sessions."
       return
 
@@ -62,7 +62,7 @@ module.exports = (reylero) ->
     res.reply "Sure master, consider it done."
 
   # Show current session's schedule
-  reylero.respond /sdt schedule$/i, (res) ->
+  robot.respond /sdt schedule$/i, (res) ->
     session = repository.currentSession()
 
     unless session
@@ -76,9 +76,9 @@ module.exports = (reylero) ->
       "There aren't talks scheduled for the next session on #{session.date} :("
 
    # Clear current session's schedule
-   reylero.respond /sdt schedule clear$/i, (res) ->
+   robot.respond /sdt schedule clear$/i, (res) ->
 
-     unless reylero.auth.isAdmin(res.message.user)
+     unless robot.auth.isAdmin(res.message.user)
        res.reply "Sorry, I'm afraid only admins are allowed to create sessions."
        return
 
@@ -93,7 +93,7 @@ module.exports = (reylero) ->
      res.reply "Sure master, consider it done."
 
    # Sessions list
-   reylero.respond /sdt sessions(?: list|)\s?(\d+)?$/i, (res) ->
+   robot.respond /sdt sessions(?: list|)\s?(\d+)?$/i, (res) ->
 
      limit    = res.match[1] || 5
      sessions = repository.sessions()[0...limit]
@@ -107,7 +107,7 @@ module.exports = (reylero) ->
      res.send "These are the last #{sessions.length} sessions details:\n" +
        list.join("\n")
 
-   reylero.respond /sdt submit ("|')?(.+)\1$/i, (res) ->
+   robot.respond /sdt submit ("|')?(.+)\1$/i, (res) ->
      session = repository.currentSession()
 
      unless session
@@ -126,8 +126,8 @@ module.exports = (reylero) ->
      else
        "Sorry, we reached the limit of talks for session on #{session.date}."
 
-   reylero.respond /sdt group submit with (\w+) ("|')?(.+)\2$/i, (res) ->
-     session = repository.currentSession(reylero)
+   robot.respond /sdt group submit with (\w+) ("|')?(.+)\2$/i, (res) ->
+     session = repository.currentSession(robot)
 
      unless session
        res.reply "Sorry, there aren't sessions scheduled yet."
