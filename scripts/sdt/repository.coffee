@@ -13,7 +13,7 @@ class Repository
       moment().startOf("day").isBefore(moment(new Date(s.date)).endOf("day"))
 
   findUser: (username) ->
-    @db.usersForFuzzyName(username)
+    @db.userForName(username)
 
   sessions: ->
     _.sortBy @db.data.sdt.sessions, (s) ->

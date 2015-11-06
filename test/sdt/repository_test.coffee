@@ -108,12 +108,12 @@ describe "sdt.Repository", ->
 
   describe "#findUser", ->
     before ->
-      @db = { usersForFuzzyName: sinon.spy(), data: { sdt: undefined }}
+      @db = { userForName: sinon.spy(), data: { sdt: undefined }}
 
-    it "relies on hubot brain's usersForFuzzyName user finder", ->
+    it "relies on hubot brain's userForName user finder", ->
       repository = new subject(@db)
       repository.findUser("john")
-      expect(@db.usersForFuzzyName).to.have.been.calledWith("john")
+      expect(@db.userForName).to.have.been.calledWith("john")
 
   describe "#sessions", ->
 

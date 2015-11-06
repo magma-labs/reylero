@@ -27,6 +27,7 @@
     "coffee-coverage": "^0.6.3",
     "coffeelint": "^1.13.0",
     "coveralls": "^2.11.4",
+    "hubot-mock-adapter": "^1.0.0",
     "istanbul": "^0.3.21",
     "mocha": "^2.3.3",
     "mocha-lcov-reporter": "^1.0.0",
