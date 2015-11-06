@@ -98,10 +98,10 @@ describe "sdt", ->
           @robot.brain.data.sdt.sessions = [@session]
 
         it "shows the session talk details", (done) ->
-          @robot.adapter.on "send", (envelope, strings) ->
+          @robot.adapter.on "send", (envelope, strings) =>
             expect(strings).to
               .include "These are the talks scheduled for the next session " +
-                       "on 11/05/2015:\n - *Hello world!* _by John Doe (john)_"
+                       "on #{@date}:\n - *Hello world!* _by John Doe (john)_"
             done()
 
           message = "hubot sdt schedule"
@@ -241,9 +241,9 @@ describe "sdt", ->
 
 
       it "shows last session details", (done) ->
-        @robot.adapter.on "send", (envelope, strings) ->
+        @robot.adapter.on "send", (envelope, strings) =>
           expect(strings).to
-            .include "These are the last (1) session details:\n11/05/2015:\n" +
+            .include "These are the last (1) session details:\n#{@date}:\n" +
                      "- *Hello world!* _by John Doe (john)_\n" +
                      "- *Ruby programming* _by Jane Doe (jane) " +
                      "& John Doe (john)_"
