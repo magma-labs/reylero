@@ -1,7 +1,7 @@
 # ReyLero
 
 [![build](https://travis-ci.org/magma-labs/reylero.svg)](https://travis-ci.org/magma-labs/reylero)
-[![coverage](https://coveralls.io/repos/magma-labs/reylero/badge.svg)](https://coveralls.io/github/magma-labs/reylero)
+[![coverage](https://coveralls.io/repos/magma-labs/reylero/badge.svg?branch=master&service=github)](https://coveralls.io/github/magma-labs/reylero?branch=master)
 [![quality](https://codeclimate.com/github/magma-labs/reylero/badges/gpa.svg)](https://codeclimate.com/github/magma-labs/reylero)
 
 reylero is a chat bot built on the [Hubot][hubot] framework. It was
