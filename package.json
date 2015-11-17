@@ -1,24 +1,23 @@
 {
   "name": "reylero",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "author": "Ignacio Galindo <ignacio.galindo@magmalabs.io>",
   "description": "tbd",
   "dependencies": {
     "coffee-script": "^1.10.0",
     "hubot": "^2.16.0",
-    "hubot-diagnostics": "0.0.1",
+    "hubot-auth": "^1.2.0",
     "hubot-google-images": "^0.2.1",
-    "hubot-google-translate": "^0.2.0",
     "hubot-help": "^0.1.1",
     "hubot-heroku-keepalive": "^1.0.0",
     "hubot-maps": "0.0.2",
-    "hubot-pugme": "^0.1.0",
     "hubot-redis-brain": "0.0.3",
     "hubot-rules": "^0.1.1",
     "hubot-scripts": "^2.16.2",
-    "hubot-shipit": "^0.2.0",
-    "hubot-slack": "^3.3.0"
+    "hubot-slack": "^3.3.0",
+    "moment": "^2.10.6",
+    "underscore": "^1.8.3"
   },
   "engines": {
     "node": "0.10.x"
@@ -26,13 +25,16 @@
   "devDependencies": {
     "chai": "^3.3.0",
     "coffee-coverage": "^0.6.3",
+    "coffeelint": "^1.13.0",
     "coveralls": "^2.11.4",
+    "hubot-mock-adapter": "^1.0.0",
     "istanbul": "^0.3.21",
     "mocha": "^2.3.3",
     "mocha-lcov-reporter": "^1.0.0",
-    "sinon": "^1.17.0"
+    "sinon": "^1.17.0",
+    "sinon-chai": "^2.8.0"
   },
   "scripts": {
-    "test": "istanbul cover _mocha --report lcovonly -- --reporter dot"
+    "test": "istanbul cover _mocha -- --reporter dot"
   }
 }
