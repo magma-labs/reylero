@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
-function log {
+function log () {
   echo "[$(date +'%a %b %d %Y %T GMT%z (%Z)')] $1 $2"
 }
 
