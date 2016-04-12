@@ -2,7 +2,24 @@
 
 set -e
 
-if [ "$HUBOT_ENV" = "production" ]; then
+function log {
+  echo "[$(date +'%a %b %d %Y %T GMT%z (%Z)')] $1 $2"
+}
+
+if [ "$HUBOT_ENV" = "" ] || [ "$HUBOT_ENV" = "development" ]; then
+
+  if [ -e ".env" ]; then
+    log "INFO" "Loading .env file."
+    source .env
+    log "INFO" "Finished loading .env file."
+  else
+    log "ERROR" "Please whether add an environment (.env) file or set HUBOT_ENV."
+    exit
+  fi
+
+fi
+
+if [ "$HUBOT_ENV" != "development" ]; then
   npm install
 fi
 
