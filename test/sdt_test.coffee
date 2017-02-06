@@ -3,9 +3,7 @@ require "./test_helper"
 describe "sdt", ->
 
   beforeEach ->
-    @robot = newTestRobot("../scripts/sdt")
-    @robot.run()
-    @robot.brain.emit("loaded")
+    @robot = newTestRobot("sdt")
 
   afterEach ->
     @robot.shutdown()
@@ -24,7 +22,7 @@ describe "sdt", ->
           expect(strings).to
             .include("Sorry, there aren't sessions scheduled yet.")
           done()
-        message = "hubot sdt group submit with admin Hello World"
+        message = "reylero sdt group submit with admin Hello World"
         @robot.adapter.receive newTestMessage(@robot, message)
 
     context "when there's a session scheduled without talks", ->
@@ -42,7 +40,7 @@ describe "sdt", ->
               .include "Sorry, I don't know who #{@peer} is."
             done()
 
-          message = "hubot sdt group submit with john Hello World"
+          message = "reylero sdt group submit with john Hello World"
           @robot.adapter.receive newTestMessage(@robot, message)
 
       context "and peer is known", ->
@@ -56,7 +54,7 @@ describe "sdt", ->
                 "scheduled for session on #{@date}."
             done()
 
-          message = "hubot sdt group submit with #{@peer} #{@talk}"
+          message = "reylero sdt group submit with #{@peer} #{@talk}"
           @robot.adapter.receive newTestMessage(@robot, message)
 
     context "when there's a session with full schedule", ->
@@ -72,7 +70,7 @@ describe "sdt", ->
 
           done()
 
-        message = "hubot sdt group submit with admin Hello World"
+        message = "reylero sdt group submit with admin Hello World"
         @robot.adapter.receive newTestMessage(@robot, message)
 
   describe "schedule", ->
@@ -83,7 +81,7 @@ describe "sdt", ->
             .include "Sorry, there aren't sessions scheduled yet."
           done()
 
-        message = "hubot sdt schedule"
+        message = "reylero sdt schedule"
         @robot.adapter.receive newTestMessage(@robot, message)
 
     context "when there's a session scheduled", ->
@@ -104,7 +102,7 @@ describe "sdt", ->
                        "on #{@date}:\n - *Hello world!* _by John Doe (john)_"
             done()
 
-          message = "hubot sdt schedule"
+          message = "reylero sdt schedule"
           @robot.adapter.receive newTestMessage(@robot, message)
 
       context "and doesn't have any talk", ->
@@ -120,7 +118,7 @@ describe "sdt", ->
                        "on #{@date} :("
             done()
 
-          message = "hubot sdt schedule"
+          message = "reylero sdt schedule"
           @robot.adapter.receive newTestMessage(@robot, message)
 
   describe "schedule clear", ->
@@ -131,7 +129,7 @@ describe "sdt", ->
             .include "Sorry, you are not allowed to create sessions."
 
           done()
-        message = "hubot sdt schedule clear"
+        message = "reylero sdt schedule clear"
         @robot.adapter.receive newTestMessage(@robot, message)
 
     context "when user is an admin", ->
@@ -143,7 +141,7 @@ describe "sdt", ->
 
             done()
 
-          message = "hubot sdt schedule clear"
+          message = "reylero sdt schedule clear"
           @robot.adapter.receive newTestMessage(@robot, message, "admin")
 
       context "and there's session scheduled", ->
@@ -159,7 +157,7 @@ describe "sdt", ->
               .include "Sure master, consider it done."
             done()
 
-          message = "hubot sdt schedule clear"
+          message = "reylero sdt schedule clear"
           @robot.adapter.receive newTestMessage(@robot, message, "admin")
 
   describe "sessions create", ->
@@ -171,7 +169,7 @@ describe "sdt", ->
             .include "Sorry, I'm afraid only admins can create sessions."
           done()
 
-        message = "hubot sdt sessions create Sep 15 2015"
+        message = "reylero sdt sessions create Sep 15 2015"
         @robot.adapter.receive newTestMessage(@robot, message)
 
     context "when user is an admin", ->
@@ -182,7 +180,7 @@ describe "sdt", ->
               .include "Excuse me master, that date seems invalid."
             done()
 
-          message = "hubot sdt sessions create Sep 35 2015"
+          message = "reylero sdt sessions create Sep 35 2015"
           @robot.adapter.receive newTestMessage(@robot, message, "admin")
 
       context "and session already exists", ->
@@ -197,7 +195,7 @@ describe "sdt", ->
               .include("Excuse me master, that session already exists.")
             done()
 
-          message = "hubot sdt sessions create Sep 15 2015"
+          message = "reylero sdt sessions create Sep 15 2015"
           @robot.adapter.receive newTestMessage(@robot, message, "admin")
 
       it "registers a new session", (done) ->
@@ -205,7 +203,7 @@ describe "sdt", ->
           expect(strings).to.include "Sure master, consider it done."
           done()
 
-        message = "hubot sdt sessions create Sep 15 2015"
+        message = "reylero sdt sessions create Sep 15 2015"
         @robot.adapter.receive newTestMessage(@robot, message, "admin")
 
   describe "sessions list", ->
@@ -217,7 +215,7 @@ describe "sdt", ->
             .include "Sorry, there aren't sessions scheduled yet."
           done()
 
-        message = "hubot sdt sessions"
+        message = "reylero sdt sessions"
         @robot.adapter.receive newTestMessage(@robot, message)
 
     context "when there is a session scheduled", ->
@@ -249,7 +247,7 @@ describe "sdt", ->
                      "& John Doe (john)_"
           done()
 
-        message = "hubot sdt sessions"
+        message = "reylero sdt sessions"
         @robot.adapter.receive newTestMessage(@robot, message)
 
   describe "submit", ->
@@ -261,7 +259,7 @@ describe "sdt", ->
             .include "Sorry, there aren't sessions scheduled yet."
           done()
 
-        message = "hubot sdt submit x"
+        message = "reylero sdt submit x"
         @robot.adapter.receive newTestMessage(@robot, message)
 
     context "when the curren session schedule has a free slot", ->
@@ -277,7 +275,7 @@ describe "sdt", ->
               "#{@date}."
           done()
 
-        message = "hubot sdt submit x"
+        message = "reylero sdt submit x"
         @robot.adapter.receive newTestMessage(@robot, message)
 
 
@@ -294,5 +292,5 @@ describe "sdt", ->
                      "for session on #{@date}."
           done()
 
-        message = "hubot sdt submit x"
+        message = "reylero sdt submit x"
         @robot.adapter.receive newTestMessage(@robot, message)

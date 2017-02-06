@@ -1,6 +1,7 @@
 chai   = require "chai"
 hubot  = require "hubot"
 moment = require "moment"
+path   = require "path"
 sinon  = require "sinon"
 
 chai.use require "sinon-chai"
@@ -14,13 +15,13 @@ global.sinon  = sinon
 
 process.env.HUBOT_AUTH_ADMIN = "1"
 
-global.newTestRobot = (script) ->
-  robot = new Robot null, "mock-adapter", false
+global.newTestRobot = (module = null) ->
+  robot = new Robot null, "mock-adapter", false, "reylero"
 
   robot.adapter.on "connected", ->
 
     require("hubot-auth")(robot)
-    require(script)(robot)
+    require("../scripts/#{module}")(robot) if module?
 
     adminUser = robot.brain.userForId "1",
       name: "admin"
@@ -31,6 +32,10 @@ global.newTestRobot = (script) ->
       name: "user"
       real_name: "An user"
       room: "#test"
+
+  robot.run()
+
+  robot.brain.emit("loaded")
 
   robot
 
